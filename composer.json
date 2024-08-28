@@ -1,0 +1,22 @@
+{
+    "name": "your-reselling/php-client",
+    "description": "Your-Reselling.de API Client",
+    "type": "libary",
+    "minimum-stability": "stable",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": {
+            "YourReselling\\PhpClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Julien Michell Herwig"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "guzzlehttp/guzzle": "^7.9",
+        "ext-json": "*"
+    }
+}
