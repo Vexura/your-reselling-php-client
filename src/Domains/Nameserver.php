@@ -7,7 +7,7 @@ use YourReselling\Client;
 
 class Nameserver
 {
-    private $client;
+    private Client $client;
 
     public function __construct(Client $client)
     {

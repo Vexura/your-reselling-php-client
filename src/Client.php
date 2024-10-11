@@ -7,7 +7,9 @@ use Psr\Http\Message\ResponseInterface;
 use YourReselling\Accounting\Accounting;
 use YourReselling\Domains\Domains;
 use YourReselling\Exceptions\ParameterException;
+use YourReselling\Licenses\Plesk;
 use YourReselling\RootServer\RootServer;
+use YourReselling\VPN\VPN;
 
 class Client
 {
@@ -17,6 +19,8 @@ class Client
     private $rootServerHandler;
     private $domainHandler;
     private $accountingHandler;
+    private $pleskHandler;
+    private $vpnHandler;
 
 
     /**
@@ -137,13 +141,14 @@ class Client
      */
     public function processRequest(ResponseInterface $response)
     {
-        $response = $response->getBody()->__toString();
-        $result = json_decode($response);
+        $responseBody = $response->getBody()->__toString();
+        $result = json_decode($responseBody, true);
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return $result;
-        } else {
-            return $response;
+            throw new \RuntimeException('JSON decoding error: ' . json_last_error_msg());
         }
+
+        return $result ?? $responseBody;
     }
 
     /**
@@ -199,8 +204,7 @@ class Client
      */
     public function accounting(): Accounting
     {
-        if (!$this->accountingHandler) $this->accountingHandler = new Accounting($this);
-        return $this->accountingHandler;
+        return $this->accountingHandler ??= new Accounting($this);
     }
 
     /**
@@ -208,8 +212,7 @@ class Client
      */
     public function domain(): Domains
     {
-        if (!$this->domainHandler) $this->domainHandler = new Domains($this);
-        return $this->domainHandler;
+        return $this->domainHandler ??= new Domains($this);
     }
 
     /**
@@ -217,9 +220,22 @@ class Client
      */
     public function rootServer(): RootServer
     {
-        if (!$this->rootServerHandler) $this->rootServerHandler = new RootServer($this);
-        return $this->rootServerHandler;
+        return $this->rootServerHandler ??= new RootServer($this);
     }
 
+    /**
+     * @return Plesk
+     */
+    public function plesk(): Plesk
+    {
+        return $this->pleskHandler ??= new Plesk($this);
+    }
 
+    /**
+     * @return VPN
+     */
+    public function vpn(): VPN
+    {
+        return $this->vpnHandler ??= new VPN($this);
+    }
 }

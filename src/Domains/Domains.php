@@ -2,11 +2,12 @@
 
 namespace YourReselling\Domains;
 
+use GuzzleHttp\Exception\GuzzleException;
 use YourReselling\Client;
 
 class Domains
 {
-    private $client;
+    private Client $client;
     private DNS $dnsHandler;
     private Nameserver $nameserverHandler;
     private Contact $contactHandler;
@@ -18,7 +19,7 @@ class Domains
 
     /**
      * @return mixed|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getAll()
     {
@@ -28,7 +29,7 @@ class Domains
     /**
      * @param int $id
      * @return mixed|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getDomainById(int $id)
     {
@@ -106,8 +107,7 @@ class Domains
      */
     public function dns(): DNS
     {
-        if (!$this->dnsHandler) $this->dnsHandler = new DNS($this->client);
-        return $this->dnsHandler;
+        return $this->dnsHandler ??= new DNS($this->client);
     }
 
     /**
@@ -115,17 +115,14 @@ class Domains
      */
     public function nameserver(): Nameserver
     {
-        if (!$this->nameserverHandler) $this->nameserverHandler = new Nameserver($this->client);
-        return $this->nameserverHandler;
+        return $this->nameserverHandler ??= new Nameserver($this->client);
     }
-
 
     /**
      * @return Contact
      */
     public function contact(): Contact
     {
-        if (!$this->contactHandler) $this->contactHandler = new Contact($this->client);
-        return $this->contactHandler;
+        return $this->contactHandler ??= new Contact($this->client);
     }
 }

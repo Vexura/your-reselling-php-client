@@ -7,7 +7,7 @@ use YourReselling\Client;
 
 class DNS
 {
-    private $client;
+    private Client $client;
 
     public function __construct(Client $client)
     {

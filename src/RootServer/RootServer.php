@@ -148,18 +148,42 @@ class RootServer
      * @param int $cores
      * @param int $ram
      * @param int $disk
+     * @param int $backups
+     * @param int $ipv4
+     * @param int $ipv6
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function calculatePrice(string $location, int $cores, int $ram, int $disk, int $backups, int $ipv4, int $ipv6)
+    {
+        return $this->client->post("products/root-server/{$location}/calculator", [
+            'cores' => $cores,
+            'ram' => $ram,
+            'disk' => $disk,
+            'backups' => $backups,
+            'ipv4' => $ipv4,
+            'ipv6' => $ipv6,
+        ]);
+    }
+
+    /**
+     * @param string $location
+     * @param int $cores
+     * @param int $ram
+     * @param int $disk
      * @param int $ipv4
      * @param int $ipv6
      * @param int $os_id
      * @param int $backups
+     * @param string|null $host_name
      * @param string|null $custom_name
      * @param string|null $root_password
      * @return mixed|string
      * @throws GuzzleException
      */
-    public function create(string $location, int $cores, int $ram, int $disk, int $ipv4, int $ipv6, int $os_id, int $backups, string $custom_name = null, string $root_password = null)
+    public function create(string $location, int $cores, int $ram, int $disk, int $ipv4, int $ipv6, int $os_id, int $backups, string $host_name = null, string $custom_name = null, string $root_password = null)
     {
-        return $this->client->post("products/root-server/{$location}/create", ['cores' => $cores, 'ram' => $ram, 'disk' => $disk, 'ipv4' => $ipv4, 'ipv6' => $ipv6, 'os_id' => $os_id, 'backups' => $backups, 'custom_name' => $custom_name, 'root_password' => $root_password]);
+        return $this->client->post("products/root-server/{$location}/create", ['cores' => $cores, 'ram' => $ram, 'disk' => $disk, 'ipv4' => $ipv4, 'ipv6' => $ipv6, 'os_id' => $os_id, 'backups' => $backups, 'custom_name' => $custom_name, 'root_password' => $root_password, 'hostname' => $host_name]);
     }
 
     /**

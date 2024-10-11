@@ -7,7 +7,7 @@ use YourReselling\Client;
 
 class Accounting
 {
-    private $client;
+    private Client $client;
 
     public function __construct(Client $client)
     {
@@ -40,11 +40,11 @@ class Accounting
     }
 
     /**
-     * @param string $id
+     * @param int $id
      * @return mixed|string
      * @throws GuzzleException
      */
-    public function getInvoiceById(string $id)
+    public function getInvoiceById(int $id)
     {
         return $this->client->get('accounting/invoices/' . $id);
     }
@@ -59,11 +59,11 @@ class Accounting
     }
 
     /**
-     * @param string $id
+     * @param int $id
      * @return mixed|string
      * @throws GuzzleException
      */
-    public function getSubUserById(string $id)
+    public function getSubUserById(int $id)
     {
         return $this->client->get('accounting/sub_users/' . $id);
     }

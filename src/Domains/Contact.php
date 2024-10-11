@@ -7,7 +7,7 @@ use YourReselling\Client;
 
 class Contact
 {
-    private $client;
+    private Client $client;
 
     public function __construct(Client $client)
     {
