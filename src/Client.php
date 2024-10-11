@@ -31,7 +31,7 @@ class Client
     public function __construct(string $token, string $version = "v1", $httpClient = null)
     {
         $this->apiToken = $token;
-        $this->httpClient = $httpClient;
+        $this->setHttpClient($httpClient);
         $this->credentials = new Credentials($token, $version);
     }
 
@@ -103,7 +103,7 @@ class Client
      */
     private function request(string $actionPath, array $params = [], string $method = 'GET'): ResponseInterface
     {
-        $url = $this->getCredentials()->getUrl(). $this->getCredentials()->getVersion() . $actionPath;
+        $url = $this->getCredentials()->getUrl(). $this->getCredentials()->getVersion() . '/' .$actionPath;
 
         if (!is_array($params)) {
             throw new ParameterException();
