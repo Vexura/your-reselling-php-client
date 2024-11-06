@@ -237,4 +237,14 @@ class RootServer
     {
         return $this->client->post("products/root-server/{$vm_id}/iso/addPrivate", ["url" => $url]);
     }
+
+    /**
+     * @param int $vm_id
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function getUsage(int $vm_id)
+    {
+        return $this->client->get("products/root-server/{$vm_id}/usage");
+    }
 }
