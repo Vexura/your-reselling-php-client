@@ -247,4 +247,14 @@ class RootServer
     {
         return $this->client->get("products/root-server/{$vm_id}/usage");
     }
+
+    /**
+     * @param int $vm_id
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function getStats(int $vm_id)
+    {
+        return $this->client->get("products/root-server/{$vm_id}/stats");
+    }
 }
