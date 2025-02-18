@@ -255,7 +255,7 @@ class RootServer
      */
     public function getStats(int $vm_id, string $runtime)
     {
-        return $this->client->get("products/root-server/{$vm_id}/stats", [
+        return $this->client->post("products/root-server/{$vm_id}/stats", [
             'runtime' => $runtime,
         ]);
     }
