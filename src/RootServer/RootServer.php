@@ -250,11 +250,13 @@ class RootServer
 
     /**
      * @param int $vm_id
+     * @param string $runtime
      * @return mixed|string
-     * @throws GuzzleException
      */
-    public function getStats(int $vm_id)
+    public function getStats(int $vm_id, string $runtime)
     {
-        return $this->client->get("products/root-server/{$vm_id}/stats");
+        return $this->client->get("products/root-server/{$vm_id}/stats", [
+            'runtime' => $runtime,
+        ]);
     }
 }
