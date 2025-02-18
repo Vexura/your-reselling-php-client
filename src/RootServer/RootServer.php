@@ -259,4 +259,13 @@ class RootServer
             'runtime' => $runtime,
         ]);
     }
+
+    /**
+     * @param int $vm_id
+     * @return mixed|string
+     */
+    public function getTasks(int $vm_id)
+    {
+        return $this->client->get("products/root-server/{$vm_id}/tasks");
+    }
 }
