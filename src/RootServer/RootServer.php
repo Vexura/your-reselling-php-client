@@ -100,9 +100,9 @@ class RootServer
      * @return mixed|string
      * @throws GuzzleException
      */
-    public function resetRootPassword(int $id, int $root_password = null)
+    public function resetRootPassword(int $id, string $root_password = null)
     {
-        return $this->client->post("products/root-server/{$id}/reinstall", ['root_password' => $root_password]);
+        return $this->client->post("products/root-server/{$id}/reset-root-password", ['root_password' => $root_password]);
     }
 
     /**
