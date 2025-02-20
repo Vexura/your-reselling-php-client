@@ -243,6 +243,37 @@ class RootServer
      * @return mixed|string
      * @throws GuzzleException
      */
+    public function getMountedIso(int $vm_id)
+    {
+        return $this->client->get("products/root-server/{$vm_id}/iso/mounted");
+    }
+
+    /**
+     * @param int $vm_id
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function unmountIso(int $vm_id)
+    {
+        return $this->client->post("products/root-server/{$vm_id}/iso/unmount");
+    }
+
+    /**
+     * @param int $vm_id
+     * @param int $iso_id
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function mountIso(int $vm_id, int $iso_id)
+    {
+        return $this->client->post("products/root-server/{$vm_id}/iso/{$iso_id}/mount");
+    }
+
+    /**
+     * @param int $vm_id
+     * @return mixed|string
+     * @throws GuzzleException
+     */
     public function getUsage(int $vm_id)
     {
         return $this->client->get("products/root-server/{$vm_id}/usage");
