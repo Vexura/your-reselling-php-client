@@ -43,7 +43,7 @@ class Plesk
     }
 
     /**
-     * @param int $licenseId StorageBox License ID
+     * @param int $licenseId Plesk License ID
      * @return mixed|string
      * @throws GuzzleException
      */
