@@ -8,6 +8,7 @@ use YourReselling\Accounting\Accounting;
 use YourReselling\Domains\Domains;
 use YourReselling\Exceptions\ParameterException;
 use YourReselling\Licenses\Plesk;
+use YourReselling\StorageBox\StorageBox;
 use YourReselling\RootServer\RootServer;
 use YourReselling\VPN\VPN;
 
@@ -19,6 +20,7 @@ class Client
     private $rootServerHandler;
     private $domainHandler;
     private $accountingHandler;
+    private $storageBoxHandler;
     private $pleskHandler;
     private $vpnHandler;
 
@@ -229,6 +231,14 @@ class Client
     public function plesk(): Plesk
     {
         return $this->pleskHandler ??= new Plesk($this);
+    }
+
+    /**
+     * @return StorageBox
+     */
+    public function storageBox(): StorageBox
+    {
+        return $this->storageBoxHandler ??= new StorageBox($this);
     }
 
     /**
