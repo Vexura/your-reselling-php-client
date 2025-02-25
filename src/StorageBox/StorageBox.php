@@ -24,6 +24,15 @@ class StorageBox
     }
 
     /**
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function getAllLoactions()
+    {
+        return $this->client->get('products/storage-box/locations');
+    }
+
+    /**
      * @param int $id
      * @return mixed|string
      * @throws GuzzleException
