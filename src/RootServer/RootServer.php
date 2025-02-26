@@ -327,17 +327,6 @@ class RootServer
      */
     public function updateConfig(int $vm_id, int $cores = null, int $ram = null, int $disk = null)
     {
-        $params = [];
-        if ($cores !== null) {
-            $params['cores'] = $cores;
-        }
-        if ($ram !== null) {
-            $params['ram'] = $ram;
-        }
-        if ($disk !== null) {
-            $params['disk'] = $disk;
-        }
-
-        return $this->client->post("products/root-server/{$vm_id}/edit-config", $params);
+        return $this->client->post("products/root-server/{$vm_id}/edit-config", ['cores' => $cores, 'ram' => $ram, 'disk' => $disk]);
     }
 }
