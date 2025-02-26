@@ -86,12 +86,29 @@ class RootServer
     /**
      * @param int $id
      * @param int|null $os_id
+     * @param string|null $hostname
+     * @param string|null $root_password
+     * @param string|null $custom_name
      * @return mixed|string
      * @throws GuzzleException
      */
-    public function reinstall(int $id, int $os_id = null)
+    public function reinstall(int $id, int $os_id = null, string $hostname = null, string $root_password = null, string $custom_name = null)
     {
-        return $this->client->post("products/root-server/{$id}/reinstall", ['os_id' => $os_id]);
+        $params = [];
+        if ($os_id !== null) {
+            $params['os_id'] = $os_id;
+        }
+        if ($hostname !== null) {
+            $params['hostname'] = $hostname;
+        }
+        if ($root_password !== null) {
+            $params['root_password'] = $root_password;
+        }
+        if ($custom_name !== null) {
+            $params['custom_name'] = $custom_name;
+        }
+
+        return $this->client->post("products/root-server/{$id}/reinstall", $params);
     }
 
     /**
@@ -298,5 +315,29 @@ class RootServer
     public function getTasks(int $vm_id)
     {
         return $this->client->get("products/root-server/{$vm_id}/tasks");
+    }
+
+    /**
+     * @param int $vm_id
+     * @param int|null $cores
+     * @param int|null $ram
+     * @param int|null $disk
+     * @return mixed|string
+     * @throws GuzzleException
+     */
+    public function updateConfig(int $vm_id, int $cores = null, int $ram = null, int $disk = null)
+    {
+        $params = [];
+        if ($cores !== null) {
+            $params['cores'] = $cores;
+        }
+        if ($ram !== null) {
+            $params['ram'] = $ram;
+        }
+        if ($disk !== null) {
+            $params['disk'] = $disk;
+        }
+
+        return $this->client->post("products/root-server/{$vm_id}/edit-config", $params);
     }
 }
