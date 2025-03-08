@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use YourReselling\Accounting\Accounting;
 use YourReselling\Domains\Domains;
 use YourReselling\Exceptions\ParameterException;
+use YourReselling\GameServer\GameServer;
 use YourReselling\Licenses\Plesk;
 use YourReselling\StorageBox\StorageBox;
 use YourReselling\RootServer\RootServer;
@@ -23,6 +24,7 @@ class Client
     private $storageBoxHandler;
     private $pleskHandler;
     private $vpnHandler;
+    private $gameServerHandler;
 
 
     /**
@@ -247,5 +249,10 @@ class Client
     public function vpn(): VPN
     {
         return $this->vpnHandler ??= new VPN($this);
+    }
+
+    public function gameServer(): GameServer
+    {
+        return $this->gameServerHandler ??= new GameServer($this);
     }
 }
