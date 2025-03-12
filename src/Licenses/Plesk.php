@@ -72,7 +72,7 @@ class Plesk
      */
     public function updateIpBinding(int $id, string $ip_address)
     {
-        return $this->client->get("products/licenses/plesk/$id/binding", [
+        return $this->client->post("products/licenses/plesk/$id/binding", [
             'ip_address' => $ip_address
         ]);
     }
