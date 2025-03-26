@@ -11,7 +11,14 @@
     },
     "authors": [
         {
-            "name": "Julien Michell Herwig"
+            "name": "Efe Bağrı",
+            "email": "composer@exbil.net",
+            "homepage": "https://www.exbil.net"
+        },
+        {
+            "name": "Julien Michell Herwig",
+            "email": "info@vexura.eu",
+            "homepage": "https://vexura.eu"
         }
     ],
     "require": {
