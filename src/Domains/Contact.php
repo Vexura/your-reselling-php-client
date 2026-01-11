@@ -19,7 +19,7 @@ class Contact
      */
     public function get(int $id)
     {
-        return $this->client->get("products/domain/{$id}/handle/get", []);
+        return $this->client->get("products/domains/{$id}/handle/get", []);
     }
 
     /**
@@ -27,7 +27,7 @@ class Contact
      */
     public function update(int $id, string $firstname, string $lastname, string $email, string $phone, string $street, string $number, string $city, string $zip, string $state, string $country, string $company = null)
     {
-        return $this->client->post("products/domain/{$id}/handle/update", [
+        return $this->client->post("products/domains/{$id}/handle/update", [
             "firstname" => $firstname,
             "lastname" => $lastname,
             "email" => $email,

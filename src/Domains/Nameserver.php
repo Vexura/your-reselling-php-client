@@ -19,7 +19,7 @@ class Nameserver
      */
     public function get(int $id)
     {
-        return $this->client->get("products/domain/{$id}/nameserver/get", []);
+        return $this->client->get("products/domains/{$id}/nameserver/get", []);
     }
 
     /**
@@ -27,7 +27,7 @@ class Nameserver
      */
     public function update(int $id, array $nameservers)
     {
-        return $this->client->post("products/domain/{$id}/nameserver/update", [
+        return $this->client->post("products/domains/{$id}/nameserver/update", [
             "nameservers" => $nameservers
         ]);
     }

@@ -19,7 +19,7 @@ class DNS
      */
     public function get(int $id)
     {
-        return $this->client->get("products/domain/{$id}/dns/get", []);
+        return $this->client->get("products/domains/{$id}/dns/get", []);
     }
 
     /**
@@ -27,7 +27,7 @@ class DNS
      */
     public function update(int $id, array $records)
     {
-        return $this->client->post("products/domain/{$id}/dns/update", [
+        return $this->client->post("products/domains/{$id}/dns/update", [
             "records" => $records
         ]);
     }

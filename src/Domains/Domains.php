@@ -23,7 +23,7 @@ class Domains
      */
     public function getAll()
     {
-        return $this->client->get('products/domain', []);
+        return $this->client->get('products/domains', []);
     }
 
     /**
@@ -33,39 +33,39 @@ class Domains
      */
     public function getDomainById(int $id)
     {
-        return $this->client->get("products/domain/{$id}");
+        return $this->client->get("products/domains/{$id}");
     }
 
     public function getAuthcode(int $id)
     {
-        return $this->client->get("products/domain/{$id}/authcode", []);
+        return $this->client->get("products/domains/{$id}/authcode", []);
     }
 
     public function addDeletionRequest(int $id)
     {
-        return $this->client->post("products/domain/{$id}/delete", []);
+        return $this->client->post("products/domains/{$id}/delete", []);
     }
 
     public function removeDeletionRequest(int $id)
     {
-        return $this->client->post("products/domain/{$id}/undelete", []);
+        return $this->client->post("products/domains/{$id}/undelete", []);
     }
 
     public function checkSingleDomain(string $domain)
     {
-        return $this->client->post('products/domain/check', [
+        return $this->client->post('products/domains/check', [
             "domain" => $domain
         ]);
     }
 
     public function getPricelist()
     {
-        return $this->client->get("products/domain/pricelist", []);
+        return $this->client->get("products/domains/pricelist", []);
     }
 
     public function create(string $domain, string $firstname, string $lastname, string $email, string $phone, string $street, string $number, string $city, string $zip, string $state, string $country, array $nameservers = [], string $company = null)
     {
-        return $this->client->post("products/domain/order", [
+        return $this->client->post("products/domains/order", [
             "domain" => $domain,
             "firstname" => $firstname,
             "lastname" => $lastname,
@@ -84,7 +84,7 @@ class Domains
 
     public function transfer(string $domain, string $authcode, string $firstname, string $lastname, string $email, string $phone, string $street, string $number, string $city, string $zip, string $state, string $country, array $nameservers = [], string $company = null)
     {
-        return $this->client->post("products/domain/transfer", [
+        return $this->client->post("products/domains/transfer", [
             "domain" => $domain,
             "authcode" => $authcode,
             "firstname" => $firstname,
