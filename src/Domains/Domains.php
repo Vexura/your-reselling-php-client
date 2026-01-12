@@ -58,6 +58,13 @@ class Domains
         ]);
     }
 
+    public function checkBulkDomain(array $domains)
+    {
+        return $this->client->post('products/domains/check-bulk', [
+            "domains" => $domains
+        ]);
+    }
+
     public function getPricelist()
     {
         return $this->client->get("products/domains/pricelist", []);
