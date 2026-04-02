@@ -1,0 +1,24 @@
+{
+    "name": "your-reselling/php-client",
+    "description": "ResellingProvider API Client for PHP",
+    "type": "library",
+    "minimum-stability": "stable",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": {
+            "YourReselling\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Efe Bagri",
+            "email": "efebagri@gmail.com",
+            "homepage": "https://www.exbil.net"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "guzzlehttp/guzzle": "^7.9",
+        "ext-json": "*"
+    }
+}
