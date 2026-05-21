@@ -8,7 +8,7 @@ class Credentials
     private string $url;
     private string $version;
 
-    public function __construct(string $token, string $version = 'v1', string $url = null)
+    public function __construct(string $token, string $version = 'v1', ?string $url = null)
     {
         $this->token = $token;
         $this->url = $url ?? 'https://resellingprovider.de/api/';

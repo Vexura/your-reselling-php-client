@@ -5,12 +5,16 @@ namespace YourReselling;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use YourReselling\Account\Account;
+use YourReselling\Announcements\Announcements;
 use YourReselling\Billing\Billing;
 use YourReselling\DDoS\DDoS;
 use YourReselling\Domains\Domains;
 use YourReselling\Exceptions\ParameterException;
+use YourReselling\Inference\Inference;
+use YourReselling\IpTunnels\IpTunnels;
 use YourReselling\Kubernetes\Kubernetes;
 use YourReselling\LoadBalancer\LoadBalancer;
+use YourReselling\PbsStorage\PbsStorage;
 use YourReselling\Plesk\Plesk;
 use YourReselling\Rootserver\Rootserver;
 use YourReselling\SubReseller\SubReseller;
@@ -23,25 +27,29 @@ class Client
     private Credentials $credentials;
     private string $apiToken;
     private ?Account $accountHandler = null;
+    private ?Announcements $announcementsHandler = null;
     private ?Billing $billingHandler = null;
     private ?DDoS $ddosHandler = null;
     private ?Domains $domainHandler = null;
+    private ?Inference $inferenceHandler = null;
+    private ?IpTunnels $ipTunnelsHandler = null;
     private ?Kubernetes $kubernetesHandler = null;
     private ?LoadBalancer $loadBalancerHandler = null;
+    private ?PbsStorage $pbsStorageHandler = null;
     private ?Plesk $pleskHandler = null;
     private ?Rootserver $rootserverHandler = null;
     private ?SubReseller $subResellerHandler = null;
     private ?TeamSpeak $teamspeakHandler = null;
     private ?VPN $vpnHandler = null;
 
-    public function __construct(string $token, string $version = 'v1', $httpClient = null, string $baseUrl = null)
+    public function __construct(string $token, string $version = 'v1', $httpClient = null, ?string $baseUrl = null)
     {
         $this->apiToken = $token;
         $this->credentials = new Credentials($token, $version, $baseUrl);
         $this->setHttpClient($httpClient);
     }
 
-    public function setHttpClient(\GuzzleHttp\Client $httpClient = null): void
+    public function setHttpClient(?\GuzzleHttp\Client $httpClient = null): void
     {
         $this->httpClient = $httpClient ?: new \GuzzleHttp\Client([
             'http_errors' => false,
@@ -49,7 +57,7 @@ class Client
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->apiToken,
-                'User-Agent' => 'ResellingProviderClient/2.0'
+                'User-Agent' => 'ResellingProviderClient/2.1'
             ],
             'allow_redirects' => false,
             'timeout' => 120
@@ -71,21 +79,26 @@ class Client
         return $this->credentials;
     }
 
-    private function request(string $actionPath, array $params = [], string $method = 'GET'): ResponseInterface
+    private function buildUrl(string $actionPath): string
     {
-        $url = $this->getCredentials()->getUrl() . $this->getCredentials()->getVersion() . '/' . $actionPath;
+        return $this->getCredentials()->getUrl() . $this->getCredentials()->getVersion() . '/' . $actionPath;
+    }
+
+    private function request(string $actionPath, array $params = [], string $method = 'GET', array $options = []): ResponseInterface
+    {
+        $url = $this->buildUrl($actionPath);
 
         switch ($method) {
             case 'GET':
-                return $this->getHttpClient()->get($url, ['query' => $params ?: null]);
+                return $this->getHttpClient()->get($url, ['query' => $params ?: null] + $options);
             case 'POST':
-                return $this->getHttpClient()->post($url, ['json' => $params]);
+                return $this->getHttpClient()->post($url, ['json' => $params] + $options);
             case 'PUT':
-                return $this->getHttpClient()->put($url, ['json' => $params]);
+                return $this->getHttpClient()->put($url, ['json' => $params] + $options);
             case 'PATCH':
-                return $this->getHttpClient()->patch($url, ['json' => $params]);
+                return $this->getHttpClient()->patch($url, ['json' => $params] + $options);
             case 'DELETE':
-                return $this->getHttpClient()->delete($url, ['json' => $params]);
+                return $this->getHttpClient()->delete($url, ['json' => $params] + $options);
             default:
                 throw new ParameterException('Invalid HTTP method: ' . $method);
         }
@@ -134,9 +147,38 @@ class Client
         return $this->processRequest($this->request($actionPath, $params, 'DELETE'));
     }
 
+    public function postRaw(string $actionPath, array $params = []): string
+    {
+        $response = $this->request($actionPath, $params, 'POST');
+
+        if ($response->getStatusCode() >= 400) {
+            $body = $response->getBody()->__toString();
+            $decoded = json_decode($body, true);
+            $message = $decoded['error']['message'] ?? $decoded['message'] ?? 'API request failed';
+            throw new \RuntimeException($message, $response->getStatusCode());
+        }
+
+        return $response->getBody()->__toString();
+    }
+
+    public function postMultipart(string $actionPath, array $multipart): array
+    {
+        $url = $this->buildUrl($actionPath);
+        $response = $this->getHttpClient()->post($url, [
+            'multipart' => $multipart,
+            'headers' => ['Content-Type' => null],
+        ]);
+        return $this->processRequest($response);
+    }
+
     public function account(): Account
     {
         return $this->accountHandler ??= new Account($this);
+    }
+
+    public function announcements(): Announcements
+    {
+        return $this->announcementsHandler ??= new Announcements($this);
     }
 
     public function billing(): Billing
@@ -154,6 +196,16 @@ class Client
         return $this->domainHandler ??= new Domains($this);
     }
 
+    public function inference(): Inference
+    {
+        return $this->inferenceHandler ??= new Inference($this);
+    }
+
+    public function ipTunnels(): IpTunnels
+    {
+        return $this->ipTunnelsHandler ??= new IpTunnels($this);
+    }
+
     public function kubernetes(): Kubernetes
     {
         return $this->kubernetesHandler ??= new Kubernetes($this);
@@ -162,6 +214,11 @@ class Client
     public function loadBalancer(): LoadBalancer
     {
         return $this->loadBalancerHandler ??= new LoadBalancer($this);
+    }
+
+    public function pbsStorage(): PbsStorage
+    {
+        return $this->pbsStorageHandler ??= new PbsStorage($this);
     }
 
     public function plesk(): Plesk
