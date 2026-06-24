@@ -106,17 +106,30 @@ class Client
 
     public function processRequest(ResponseInterface $response): array
     {
+        $statusCode = $response->getStatusCode();
         $responseBody = $response->getBody()->__toString();
         $result = json_decode($responseBody, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \RuntimeException('JSON decoding error: ' . json_last_error_msg());
+            // Non-JSON response (gateway/timeout error page, empty body, ...).
+            // Surface the HTTP status and a short body snippet so callers can
+            // tell what actually happened instead of just "JSON decoding error".
+            $snippet = trim(substr($responseBody, 0, 300));
+
+            throw new \RuntimeException(
+                sprintf(
+                    'Unexpected non-JSON response (HTTP %d): %s',
+                    $statusCode,
+                    $snippet !== '' ? $snippet : '<empty response body>'
+                ),
+                $statusCode
+            );
         }
 
-        if ($response->getStatusCode() >= 400) {
+        if ($statusCode >= 400) {
             $error = $result['error'] ?? [];
             $message = $error['message'] ?? $result['message'] ?? 'API request failed';
-            throw new \RuntimeException($message, $response->getStatusCode());
+            throw new \RuntimeException($message, $statusCode);
         }
 
         return $result['data'] ?? $result;
