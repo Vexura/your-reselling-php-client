@@ -103,14 +103,69 @@ class Rootserver
         return $this->client->get("products/rootserver/{$id}/live-stats");
     }
 
-    public function historicalStats(string $id): array
+    /**
+     * @param string $period One of 1h, 6h, 24h, 7d, 30d. Defaults to 24h.
+     */
+    public function historicalStats(string $id, string $period = '24h'): array
     {
-        return $this->client->get("products/rootserver/{$id}/historical-stats");
+        return $this->client->get("products/rootserver/{$id}/historical-stats", ['period' => $period]);
     }
 
     public function vnc(string $id): array
     {
         return $this->client->get("products/rootserver/{$id}/vnc");
+    }
+
+    /**
+     * Serial console connection details.
+     */
+    public function serial(string $id): array
+    {
+        return $this->client->get("products/rootserver/{$id}/serial");
+    }
+
+    /**
+     * Every address assigned to the server, with the primary flagged.
+     *
+     * Returns ipv4_addresses (id, address, is_primary, rdns, removable),
+     * ipv4_count and max_ipv4.
+     */
+    public function getIps(string $id): array
+    {
+        return $this->client->get("products/rootserver/{$id}/ips");
+    }
+
+    /**
+     * Order additional IPv4 addresses.
+     *
+     * Note this is not a resize: address count is not part of the machine's
+     * sizing, and ordering through resize() would rewrite cores, memory and
+     * disk along with it.
+     */
+    public function orderIpv4(string $id, int $count = 1): array
+    {
+        return $this->client->post("products/rootserver/{$id}/ips/ipv4", ['count' => $count]);
+    }
+
+    /**
+     * Return a secondary IPv4 address.
+     *
+     * The primary cannot be returned — make another address primary first.
+     */
+    public function releaseIpv4(string $id, string $ipId): array
+    {
+        return $this->client->delete("products/rootserver/{$id}/ips/ipv4/{$ipId}");
+    }
+
+    /**
+     * Set the primary IPv4 address.
+     *
+     * It is the address the server answers on by default, and the one a
+     * reinstall brings the machine back up with.
+     */
+    public function setPrimaryIpv4(string $id, string $ipId): array
+    {
+        return $this->client->post("products/rootserver/{$id}/ips/ipv4/{$ipId}/primary");
     }
 
     public function getAllTasks(): array

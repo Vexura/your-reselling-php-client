@@ -32,6 +32,14 @@ class TeamSpeak
         return $this->client->get("products/teamspeak/instances/{$id}");
     }
 
+    /**
+     * The virtual servers running on one instance.
+     */
+    public function getInstanceVirtualServers(string $id): array
+    {
+        return $this->client->get("products/teamspeak/instances/{$id}/virtualservers");
+    }
+
     public function createInstance(array $params): array
     {
         return $this->client->post('products/teamspeak/instances/create', $params);

@@ -6,17 +6,25 @@ use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use YourReselling\Account\Account;
 use YourReselling\Announcements\Announcements;
+use YourReselling\Asn\Asn;
 use YourReselling\Billing\Billing;
+use YourReselling\ContainerRegistry\ContainerRegistry;
 use YourReselling\DDoS\DDoS;
+use YourReselling\Dedicated\Dedicated;
 use YourReselling\Domains\Domains;
 use YourReselling\Exceptions\ParameterException;
 use YourReselling\Inference\Inference;
 use YourReselling\IpTunnels\IpTunnels;
+use YourReselling\Ipv6\Ipv6;
 use YourReselling\Kubernetes\Kubernetes;
 use YourReselling\LoadBalancer\LoadBalancer;
 use YourReselling\PbsStorage\PbsStorage;
 use YourReselling\Plesk\Plesk;
+use YourReselling\Ripe\Ripe;
 use YourReselling\Rootserver\Rootserver;
+use YourReselling\S3Storage\S3Storage;
+use YourReselling\Ssl\Ssl;
+use YourReselling\StorageBox\StorageBox;
 use YourReselling\SubReseller\SubReseller;
 use YourReselling\TeamSpeak\TeamSpeak;
 use YourReselling\VPN\VPN;
@@ -41,6 +49,14 @@ class Client
     private ?SubReseller $subResellerHandler = null;
     private ?TeamSpeak $teamspeakHandler = null;
     private ?VPN $vpnHandler = null;
+    private ?Asn $asnHandler = null;
+    private ?ContainerRegistry $containerRegistryHandler = null;
+    private ?Dedicated $dedicatedHandler = null;
+    private ?Ipv6 $ipv6Handler = null;
+    private ?Ripe $ripeHandler = null;
+    private ?S3Storage $s3StorageHandler = null;
+    private ?Ssl $sslHandler = null;
+    private ?StorageBox $storageBoxHandler = null;
 
     public function __construct(string $token, string $version = 'v1', $httpClient = null, ?string $baseUrl = null)
     {
@@ -160,6 +176,24 @@ class Client
         return $this->processRequest($this->request($actionPath, $params, 'DELETE'));
     }
 
+    /**
+     * A GET whose response is not JSON — a rendered file, an archive, an
+     * image. Returns the body untouched.
+     */
+    public function getRaw(string $actionPath, array $params = []): string
+    {
+        $response = $this->request($actionPath, $params, 'GET');
+
+        if ($response->getStatusCode() >= 400) {
+            $body = $response->getBody()->__toString();
+            $decoded = json_decode($body, true);
+            $message = $decoded['error']['message'] ?? $decoded['message'] ?? 'API request failed';
+            throw new \RuntimeException($message, $response->getStatusCode());
+        }
+
+        return $response->getBody()->__toString();
+    }
+
     public function postRaw(string $actionPath, array $params = []): string
     {
         $response = $this->request($actionPath, $params, 'POST');
@@ -242,6 +276,46 @@ class Client
     public function rootserver(): Rootserver
     {
         return $this->rootserverHandler ??= new Rootserver($this);
+    }
+
+    public function asn(): Asn
+    {
+        return $this->asnHandler ??= new Asn($this);
+    }
+
+    public function containerRegistry(): ContainerRegistry
+    {
+        return $this->containerRegistryHandler ??= new ContainerRegistry($this);
+    }
+
+    public function dedicated(): Dedicated
+    {
+        return $this->dedicatedHandler ??= new Dedicated($this);
+    }
+
+    public function ipv6(): Ipv6
+    {
+        return $this->ipv6Handler ??= new Ipv6($this);
+    }
+
+    public function ripe(): Ripe
+    {
+        return $this->ripeHandler ??= new Ripe($this);
+    }
+
+    public function s3Storage(): S3Storage
+    {
+        return $this->s3StorageHandler ??= new S3Storage($this);
+    }
+
+    public function ssl(): Ssl
+    {
+        return $this->sslHandler ??= new Ssl($this);
+    }
+
+    public function storageBox(): StorageBox
+    {
+        return $this->storageBoxHandler ??= new StorageBox($this);
     }
 
     public function subReseller(): SubReseller

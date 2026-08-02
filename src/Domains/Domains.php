@@ -206,6 +206,14 @@ class Domains
         return $this->client->post("products/domains/{$id}/disableAutoRenew");
     }
 
+    /**
+     * The DNS record types the zone editor accepts.
+     */
+    public function dnsRecordTypes(): array
+    {
+        return $this->client->get('products/domains/dns/record-types');
+    }
+
     // --- Sub-handlers ---
 
     public function dns(): DNS

@@ -45,6 +45,47 @@ class Inference
         return $this->client->post('products/inference/images/generations', $params);
     }
 
+    // --- Video ---
+
+    /**
+     * Start a video generation. The job runs asynchronously — poll getVideo()
+     * until it reports completion, then fetch getVideoContent().
+     */
+    public function createVideo(array $params): array
+    {
+        return $this->client->post('products/inference/videos', $params);
+    }
+
+    public function videos(array $params = []): array
+    {
+        return $this->client->get('products/inference/videos', $params);
+    }
+
+    public function getVideo(string $videoId): array
+    {
+        return $this->client->get("products/inference/videos/{$videoId}");
+    }
+
+    /**
+     * The rendered video itself, as raw bytes rather than JSON.
+     */
+    public function getVideoContent(string $videoId): string
+    {
+        return $this->client->getRaw("products/inference/videos/{$videoId}/content");
+    }
+
+    public function deleteVideo(string $videoId): array
+    {
+        return $this->client->delete("products/inference/videos/{$videoId}");
+    }
+
+    // --- Moderation ---
+
+    public function moderate(array $params): array
+    {
+        return $this->client->post('products/inference/moderations', $params);
+    }
+
     // --- Models ---
 
     public function models(): array
@@ -65,6 +106,11 @@ class Inference
     public function imageModels(): array
     {
         return $this->client->get('products/inference/models/images');
+    }
+
+    public function videoModels(): array
+    {
+        return $this->client->get('products/inference/models/video');
     }
 
     // --- Usage ---
